@@ -1,0 +1,620 @@
+			Student Information System (SIS)
+
+Task 1. Database Design:  
+
+1. Create the database named "SISDB" 
+
+mysql> create database sisdb;
+Query OK, 1 row affected (0.01 sec)
+
+mysql> use sisdb;
+Database changed
+
+2. Define the schema for the Students, Courses, Enrollments, Teacher, and Payments tables based 
+on the provided schema. Write SQL scripts to create the mentioned tables with appropriate data 
+types, constraints, and relationships.  
+a. Students  
+b. Courses 
+c. Enrollments  
+d. Teacher  
+e. Payments 
+
+4. Create appropriate Primary Key and Foreign Key constraints for referential integrity. 
+
+mysql> create table students(
+    -> student_id int primary key auto_increment,
+    -> first_name VARCHAR(50) NOT NULL,
+    ->     last_name VARCHAR(50) NOT NULL,
+    ->     date_of_birth DATE NOT NULL,
+    ->     email VARCHAR(100) UNIQUE NOT NULL,
+    ->     phone_number VARCHAR(15) UNIQUE NOT NULL
+    -> );
+Query OK, 0 rows affected (0.07 sec)
+
+mysql> CREATE TABLE teacher (
+    ->     teacher_id INT PRIMARY KEY AUTO_INCREMENT,
+    ->     first_name VARCHAR(50) NOT NULL,
+    ->     last_name VARCHAR(50) NOT NULL,
+    ->     email VARCHAR(100) UNIQUE NOT NULL
+    -> );
+Query OK, 0 rows affected (0.04 sec)
+
+mysql> CREATE TABLE courses (
+    ->     course_id INT PRIMARY KEY AUTO_INCREMENT,
+    ->     course_name VARCHAR(100) NOT NULL,
+    ->     credits INT NOT NULL,
+    ->     teacher_id INT,
+    ->     FOREIGN KEY (teacher_id) REFERENCES teacher(teacher_id)
+    -> );
+Query OK, 0 rows affected (0.06 sec)
+
+mysql> CREATE TABLE enrollments (
+    ->     enrollment_id INT PRIMARY KEY AUTO_INCREMENT,
+    ->     student_id INT,
+    ->     course_id INT,
+    ->     enrollment_date DATE NOT NULL,
+    ->     FOREIGN KEY (student_id) REFERENCES students(student_id),
+    ->     FOREIGN KEY (course_id) REFERENCES courses(course_id)
+    -> );
+Query OK, 0 rows affected (0.05 sec)
+
+mysql> CREATE TABLE payments (
+    ->     payment_id INT PRIMARY KEY AUTO_INCREMENT,
+    ->     student_id INT,
+    ->     amount DECIMAL(10,2) NOT NULL,
+    ->     payment_date DATE NOT NULL,
+    ->     FOREIGN KEY (student_id) REFERENCES students(student_id)
+    -> );
+Query OK, 0 rows affected (0.05 sec)
+
+5. Insert at least 10 sample records into each of the following tables. 
+i. Students
+ii. Courses
+iii. Enrollments
+iv. Teacher  
+v. Payments
+
+mysql> INSERT INTO students (first_name, last_name, date_of_birth, email, phone_number) VALUES
+    -> ('jane', 'smith', '2001-08-21', 'jane.smith@example.com', '1234567891'),
+    -> ('alex', 'brown', '1999-12-10', 'alex.brown@example.com', '1234567892'),
+    -> ('maria', 'clark', '2002-03-05', 'maria.clark@example.com', '1234567893'),
+    -> ('david', 'lee', '2000-07-22', 'david.lee@example.com', '1234567894'),
+    -> ('susan', 'white', '1998-11-13', 'susan.white@example.com', '1234567895'),
+    -> ('paul', 'miller', '2001-01-30', 'paul.miller@example.com', '1234567896'),
+    -> ('laura', 'wilson', '1999-06-18', 'laura.wilson@example.com', '1234567897'),
+    -> ('robert', 'martin', '2002-09-25', 'robert.martin@example.com', '1234567898'),
+    -> ('emily', 'thomas', '2000-04-12', 'emily.thomas@example.com', '1234567899');
+Query OK, 10 rows affected (0.01 sec)
+Records: 10  Duplicates: 0  Warnings: 0
+
+mysql> INSERT INTO teacher (first_name, last_name, email) VALUES
+    -> ('michael', 'johnson', 'michael.johnson@example.com'),
+    -> ('linda', 'davis', 'linda.davis@example.com'),
+    -> ('william', 'martinez', 'william.martinez@example.com'),
+    -> ('elizabeth', 'garcia', 'elizabeth.garcia@example.com'),
+    -> ('charles', 'rodriguez', 'charles.rodriguez@example.com');
+Query OK, 5 rows affected (0.01 sec)
+Records: 5  Duplicates: 0  Warnings: 0
+
+mysql> INSERT INTO courses (course_name, credits, teacher_id) VALUES
+    -> ('math 101', 3, 1),
+    -> ('physics 201', 4, 2),
+    -> ('chemistry 301', 4, 3),
+    -> ('history 101', 3, 4),
+    -> ('computer science 101', 5, 5),
+    -> ('biology 201', 4, 1),
+    -> ('english literature', 3, 2),
+    -> ('economics 202', 3, 3),
+    -> ('psychology 101', 4, 4),
+    -> ('philosophy 301', 3, 5);
+Query OK, 10 rows affected (0.01 sec)
+Records: 10  Duplicates: 0  Warnings: 0
+
+mysql> INSERT INTO enrollments (student_id, course_id, enrollment_date) VALUES
+    -> (1, 1, '2024-01-10'),
+    -> (2, 2, '2024-01-12'),
+    -> (3, 3, '2024-01-15'),
+    -> (4, 4, '2024-01-20'),
+    -> (5, 5, '2024-01-25'),
+    -> (6, 6, '2024-02-01'),
+    -> (7, 7, '2024-02-05'),
+    -> (8, 8, '2024-02-10');
+Query OK, 8 rows affected (0.01 sec)
+Records: 8  Duplicates: 0  Warnings: 0
+
+mysql> INSERT INTO payments (student_id, amount, payment_date) VALUES
+    -> (1, 500.00, '2024-01-05'),
+    -> (2, 450.00, '2024-01-10'),
+    -> (3, 600.00, '2024-01-15'),
+    -> (4, 550.00, '2024-01-20'),
+    -> (5, 400.00, '2024-01-25'),
+    -> (6, 520.00, '2024-02-01'),
+    -> (7, 470.00, '2024-02-05');
+Query OK, 7 rows affected (0.01 sec)
+Records: 7  Duplicates: 0  Warnings: 0
+
+
+Tasks 2: Select, Where, Between, AND, LIKE:   
+1. Write an SQL query to insert a new student into the "Students" table with the following details: 
+a. First Name: John 
+b. Last Name: Doe 
+c. Date of Birth: 1995-08-15 
+d. Email: john.doe@example.com 
+e. Phone Number: 1234567890 
+
+mysql> INSERT INTO students (first_name, last_name, date_of_birth, email, phone_number) 
+    -> VALUES('john', 'doe', '2000-05-15', 'john.doe@example.com', '1234567890');
+Query OK, 1 row affected (0.01 sec)
+
+2. Write an SQL query to enroll a student in a course. Choose an existing student and course and insert a record into the "Enrollments" table with the enrollment date. 
+
+mysql> INSERT INTO enrollments (student_id, course_id, enrollment_date)
+    -> VALUES (1, 2, '2025-03-20');
+Query OK, 1 row affected (0.01 sec)
+
+3. Update the email address of a specific teacher in the "Teacher" table. Choose any teacher and modify their email address. 
+
+mysql> UPDATE teacher
+    -> SET email = 'new.email@example.com'
+    -> WHERE teacher_id = 3;
+Query OK, 1 row affected (0.02 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+4. Write an SQL query to delete a specific enrollment record from the "Enrollments" table. Select an enrollment record based on the student and course. 
+
+mysql> DELETE FROM enrollments
+    -> WHERE student_id = 2 AND course_id = 3;
+Query OK, 0 rows affected (0.00 sec)
+
+5. Update the "Courses" table to assign a specific teacher to a course. Choose any course and teacher from the respective tables. 
+
+mysql> UPDATE courses
+    -> SET teacher_id = 4
+    -> WHERE course_id = 5;
+Query OK, 1 row affected (0.01 sec)
+
+6. Delete a specific student from the "Students" table and remove all their enrollment records from the "Enrollments" table. Be sure to maintain referential integrity. 
+
+DELETE FROM payments
+    -> WHERE student_id = 6;
+Query OK, 1 row affected (0.00 sec)
+
+mysql> DELETE FROM enrollments
+    -> WHERE student_id = 6;
+Query OK, 0 rows affected (0.00 sec)
+
+mysql> DELETE FROM students
+    -> WHERE student_id = 6;
+Query OK, 1 row affected (0.00 sec)
+
+7. Update the payment amount for a specific payment record in the "Payments" table. Choose any payment record and modify the payment amount.
+
+mysql> UPDATE payments
+    -> SET amount = 750.00
+    -> WHERE payment_id = 3;
+Query OK, 1 row affected (0.00 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+
+Task 3. Aggregate functions, Having, Order By, GroupBy and Joins:  
+
+1. Write an SQL query to calculate the total payments made by a specific student. You will need to join the "Payments" table with the "Students" table based on the student's ID. 
+
+mysql> SELECT
+    ->     CONCAT(s.first_name, ' ', s.last_name) AS name,
+    ->     s.student_id,
+    ->     SUM(p.amount) AS total_payments
+    -> FROM students s
+    -> JOIN payments p ON s.student_id = p.student_id
+    -> GROUP BY s.student_id, name;
++-------------+------------+----------------+
+| name        | student_id | total_payments |
++-------------+------------+----------------+
+| john doe    |          1 |         500.00 |
+| jane smith  |          2 |         450.00 |
+| alex brown  |          3 |         750.00 |
+| maria clark |          4 |         550.00 |
+| david lee   |          5 |         400.00 |
+| paul miller |          7 |         470.00 |
++-------------+------------+----------------+
+6 rows in set (0.00 sec)
+
+2. Write an SQL query to retrieve a list of courses along with the count of students enrolled in each course. Use a JOIN operation between the "Courses" table and the "Enrollments" table. 
+
+mysql> SELECT
+    ->     c.course_id,
+    ->     c.course_name,
+    ->     COUNT(e.student_id) AS total_enrollments
+    -> FROM courses c
+    -> LEFT JOIN enrollments e ON c.course_id = e.course_id
+    -> GROUP BY c.course_id, c.course_name;
++-----------+----------------------+-------------------+
+| course_id | course_name          | total_enrollments |
++-----------+----------------------+-------------------+
+|         1 | math 101             |                 1 |
+|         2 | physics 201          |                 2 |
+|         3 | chemistry 301        |                 1 |
+|         4 | history 101          |                 1 |
+|         5 | computer science 101 |                 1 |
+|         6 | biology 201          |                 0 |
+|         7 | english literature   |                 1 |
+|         8 | economics 202        |                 1 |
+|         9 | psychology 101       |                 0 |
+|        10 | philosophy 301       |                 0 |
++-----------+----------------------+-------------------+
+10 rows in set (0.00 sec)
+
+3. Write an SQL query to find the names of students who have not enrolled in any course. Use a LEFT JOIN between the "Students" table and the "Enrollments" table to identify students without enrollments. 
+
+mysql> SELECT
+    ->     CONCAT(s.first_name, ' ', s.last_name) AS name
+    -> FROM students s
+    -> LEFT JOIN enrollments e ON s.student_id = e.student_id
+    -> WHERE e.student_id IS NULL;
++---------------+
+| name          |
++---------------+
+| robert martin |
+| emily thomas  |
++---------------+
+2 rows in set (0.00 sec)
+
+4. Write an SQL query to retrieve the first name, last name of students, and the names of the courses they are enrolled in. Use JOIN operations between the "Students" table and the "Enrollments" and "Courses" tables. 
+
+mysql> SELECT
+    ->     CONCAT(s.first_name, ' ', s.last_name) AS student_name,
+    ->     c.course_name
+    -> FROM students s
+    -> JOIN enrollments e ON s.student_id = e.student_id
+    -> JOIN courses c ON e.course_id = c.course_id;
++--------------+----------------------+
+| student_name | course_name          |
++--------------+----------------------+
+| john doe     | math 101             |
+| jane smith   | physics 201          |
+| alex brown   | chemistry 301        |
+| maria clark  | history 101          |
+| david lee    | computer science 101 |
+| paul miller  | english literature   |
+| laura wilson | economics 202        |
+| john doe     | physics 201          |
++--------------+----------------------+
+8 rows in set (0.00 sec)
+
+5. Create a query to list the names of teachers and the courses they are assigned to. Join the "Teacher" table with the "Courses" table.
+
+mysql> SELECT
+    ->     CONCAT(s.first_name, ' ', s.last_name) AS student_name,
+    ->     e.enrollment_date,
+    ->     c.course_name
+    -> FROM students s
+    -> JOIN enrollments e ON s.student_id = e.student_id
+    -> JOIN courses c ON e.course_id = c.course_id;
++--------------+-----------------+----------------------+
+| student_name | enrollment_date | course_name          |
++--------------+-----------------+----------------------+
+| john doe     | 2024-01-10      | math 101             |
+| jane smith   | 2024-01-12      | physics 201          |
+| alex brown   | 2024-01-15      | chemistry 301        |
+| maria clark  | 2024-01-20      | history 101          |
+| david lee    | 2024-01-25      | computer science 101 |
+| paul miller  | 2024-02-05      | english literature   |
+| laura wilson | 2024-02-10      | economics 202        |
+| john doe     | 2025-03-20      | physics 201          |
++--------------+-----------------+----------------------+
+8 rows in set (0.00 sec)
+
+6. Retrieve a list of students and their enrollment dates for a specific course. You'll need to join the "Students" table with the "Enrollments" and "Courses" tables. 
+
+mysql> SELECT
+    ->     CONCAT(s.first_name, ' ', s.last_name) AS student_name
+    -> FROM students s
+    -> LEFT JOIN payments p ON s.student_id = p.student_id
+    -> WHERE p.student_id IS NULL;
++---------------+
+| student_name  |
++---------------+
+| laura wilson  |
+| robert martin |
+| emily thomas  |
++---------------+
+3 rows in set (0.00 sec)
+
+7. Find the names of students who have not made any payments. Use a LEFT JOIN between the "Students" table and the "Payments" table and filter for students with NULL payment records. 
+
+mysql> SELECT c.course_id, c.course_name
+    -> FROM courses c
+    -> LEFT JOIN enrollments e ON c.course_id = e.course_id
+    -> WHERE e.course_id IS NULL;
++-----------+----------------+
+| course_id | course_name    |
++-----------+----------------+
+|         6 | biology 201    |
+|         9 | psychology 101 |
+|        10 | philosophy 301 |
++-----------+----------------+
+3 rows in set (0.00 sec)
+
+8. Write a query to identify courses that have no enrollments. You'll need to use a LEFT JOIN between the "Courses" table and the "Enrollments" table and filter for courses with NULL enrollment records.
+
+mysql> SELECT c.course_name
+    -> FROM courses c
+    -> LEFT JOIN enrollments e ON c.course_id = e.course_id
+    -> WHERE e.course_id IS NULL;
++----------------+
+| course_name    |
++----------------+
+| biology 201    |
+| psychology 101 |
+| philosophy 301 |
++----------------+
+3 rows in set (0.02 sec)
+
+9. Identify students who are enrolled in more than one course. Use a self-join on the "Enrollments" table to find students with multiple enrollment records. 
+
+mysql> SELECT s.student_id, CONCAT(s.first_name, ' ', s.last_name) AS student_name, COUNT(e.course_id) AS course_count
+    -> FROM enrollments e
+    -> JOIN students s ON e.student_id = s.student_id
+    -> GROUP BY s.student_id, s.first_name, s.last_name
+    -> HAVING COUNT(e.course_id) > 1;
++------------+--------------+--------------+
+| student_id | student_name | course_count |
++------------+--------------+--------------+
+|          1 | john doe     |            2 |
++------------+--------------+--------------+
+1 row in set (0.02 sec)
+
+
+10. Find teachers who are not assigned to any courses. Use a LEFT JOIN between the "Teacher" table and the "Courses" table and filter for teachers with NULL course assignments. 
+
+mysql> SELECT t.*
+    -> FROM teacher t
+    -> LEFT JOIN courses c ON t.teacher_id = c.teacher_id
+    -> WHERE c.course_id IS NULL;
+Empty set (0.03 sec)
+
+
+Task 4. Subquery and its type:  
+
+1. Write an SQL query to calculate the average number of students enrolled in each course. Use aggregate functions and subqueries to achieve this. 
+
+mysql> SELECT course_id, AVG(student_count) AS average_students_per_course
+    -> FROM (
+    ->     SELECT course_id, COUNT(student_id) AS student_count
+    ->     FROM enrollments
+    ->     GROUP BY course_id
+    -> ) AS course_enrollments
+    -> GROUP BY course_id;
++-----------+-----------------------------+
+| course_id | average_students_per_course |
++-----------+-----------------------------+
+|         1 |                      1.0000 |
+|         2 |                      2.0000 |
+|         3 |                      1.0000 |
+|         4 |                      1.0000 |
+|         5 |                      1.0000 |
+|         7 |                      1.0000 |
+|         8 |                      1.0000 |
++-----------+-----------------------------+
+7 rows in set (0.01 sec)
+
+2. Identify the student(s) who made the highest payment. Use a subquery to find the maximum 
+payment amount and then retrieve the student(s) associated with that amount. 
+
+mysql> SELECT p.student_id, CONCAT(s.first_name, ' ', s.last_name) AS student_name, p.amount
+    -> FROM students s
+    -> JOIN payments p ON s.student_id = p.student_id
+    -> WHERE p.amount = (SELECT MAX(amount) FROM payments);
++------------+--------------+--------+
+| student_id | student_name | amount |
++------------+--------------+--------+
+|          3 | alex brown   | 750.00 |
++------------+--------------+--------+
+1 row in set (0.02 sec)
+
+3. Retrieve a list of courses with the highest number of enrollments. Use subqueries to find the course(s) with the maximum enrollment count. 
+
+mysql> SELECT course_id, COUNT(student_id) AS enrollment_count
+    -> FROM enrollments
+    -> GROUP BY course_id
+    -> ORDER BY enrollment_count DESC;
++-----------+------------------+
+| course_id | enrollment_count |
++-----------+------------------+
+|         2 |                2 |
+|         1 |                1 |
+|         3 |                1 |
+|         4 |                1 |
+|         5 |                1 |
+|         7 |                1 |
+|         8 |                1 |
++-----------+------------------+
+7 rows in set (0.00 sec)
+
+4. Calculate the total payments made to courses taught by each teacher. Use subqueries to sum payments for each teacher's courses. 
+
+mysql> SELECT
+    ->     t.teacher_id,
+    ->     CONCAT(t.first_name, ' ', t.last_name) AS teacher_name,
+    ->     c.course_id,
+    ->     c.course_name,
+    ->     COALESCE(SUM(p.amount), 0) AS total_payments
+    -> FROM courses c
+    -> JOIN teacher t ON c.teacher_id = t.teacher_id
+    -> LEFT JOIN enrollments e ON c.course_id = e.course_id 
+    -> LEFT JOIN payments p ON e.student_id = p.student_id
+    -> GROUP BY t.teacher_id, teacher_name, c.course_id, c.course_name
+    -> ORDER BY t.teacher_id, c.course_id;
++------------+-------------------+-----------+----------------------+----------------+
+| teacher_id | teacher_name      | course_id | course_name          | total_payments |
++------------+-------------------+-----------+----------------------+----------------+
+|          1 | michael johnson   |         1 | math 101             |         500.00 |
+|          1 | michael johnson   |         6 | biology 201          |           0.00 |
+|          2 | linda davis       |         2 | physics 201          |         950.00 |
+|          2 | linda davis       |         7 | english literature   |         470.00 |
+|          3 | william martinez  |         3 | chemistry 301        |         750.00 |
+|          3 | william martinez  |         8 | economics 202        |           0.00 |
+|          4 | elizabeth garcia  |         4 | history 101          |         550.00 |
+|          4 | elizabeth garcia  |         5 | computer science 101 |         400.00 |
+|          4 | elizabeth garcia  |         9 | psychology 101       |           0.00 |
+|          5 | charles rodriguez |        10 | philosophy 301       |           0.00 |
++------------+-------------------+-----------+----------------------+----------------+
+10 rows in set (0.00 sec)
+
+5. Identify students who are enrolled in all available courses. Use subqueries to compare a 
+student's enrollments with the total number of courses. 
+
+mysql> SELECT e.student_id, CONCAT(s.first_name, ' ', s.last_name) AS student_name
+    -> FROM enrollments e
+    -> JOIN students s ON e.student_id = s.student_id
+    -> GROUP BY e.student_id, student_name
+    -> HAVING COUNT(e.course_id) = (SELECT COUNT(*) FROM courses);
+Empty set (0.00 sec)
+
+6. Retrieve the names of teachers who have not been assigned to any courses. Use subqueries to find teachers with no course assignments. 
+
+mysql> SELECT t.teacher_id,
+    ->        CONCAT(t.first_name, ' ', t.last_name) AS teacher_name
+    -> FROM teacher t
+    -> LEFT JOIN courses c ON t.teacher_id = c.teacher_id
+    -> WHERE c.teacher_id IS NULL;
+Empty set (0.00 sec)
+
+7. Calculate the average age of all students. Use subqueries to calculate the age of each student based on their date of birth. 
+
+mysql> SELECT AVG(age) AS average_age
+    -> FROM (
+    ->     SELECT TIMESTAMPDIFF(YEAR, date_of_birth, CURDATE()) AS age
+    ->     FROM students
+    -> ) AS student_dob;
++-------------+
+| average_age |
++-------------+
+|     23.7778 |
++-------------+
+1 row in set (0.01 sec)
+
+8. Identify courses with no enrollments. Use subqueries to find courses without enrollment 
+records. 
+
+mysql> SELECT *
+    -> FROM courses
+    -> WHERE course_id NOT IN (SELECT DISTINCT course_id FROM enrollments);
++-----------+----------------+---------+------------+
+| course_id | course_name    | credits | teacher_id |
++-----------+----------------+---------+------------+
+|         6 | biology 201    |       4 |          1 |
+|         9 | psychology 101 |       4 |          4 |
+|        10 | philosophy 301 |       3 |          5 |
++-----------+----------------+---------+------------+
+3 rows in set (0.00 sec)
+
+9. Calculate the total payments made by each student for each course they are enrolled in. Use subqueries and aggregate functions to sum payments.
+ 
+mysql> SELECT
+    ->     s.student_id,
+    ->     CONCAT(s.first_name, ' ', s.last_name) AS student_name,
+    ->     c.course_id,
+    ->     c.course_name,
+    ->     COALESCE(SUM(p.amount), 0) AS total_amount_per_course
+    -> FROM students s
+    -> LEFT JOIN enrollments e ON s.student_id = e.student_id
+    -> JOIN courses c ON e.course_id = c.course_id
+    -> LEFT JOIN payments p ON e.student_id = p.student_id
+    -> GROUP BY s.student_id, student_name, c.course_id, c.course_name;
++------------+--------------+-----------+----------------------+-------------------------+
+| student_id | student_name | course_id | course_name          | total_amount_per_course |
++------------+--------------+-----------+----------------------+-------------------------+
+|          1 | john doe     |         1 | math 101             |                  500.00 |
+|          2 | jane smith   |         2 | physics 201          |                  450.00 |
+|          3 | alex brown   |         3 | chemistry 301        |                  750.00 |
+|          4 | maria clark  |         4 | history 101          |                  550.00 |
+|          5 | david lee    |         5 | computer science 101 |                  400.00 |
+|          7 | paul miller  |         7 | english literature   |                  470.00 |
+|          8 | laura wilson |         8 | economics 202        |                    0.00 |
+|          1 | john doe     |         2 | physics 201          |                  500.00 |
++------------+--------------+-----------+----------------------+-------------------------+
+8 rows in set (0.00 sec)
+
+10. Identify students who have made more than one payment. Use subqueries and aggregate 
+functions to count payments per student and filter for those with counts greater than one.
+
+ mysql> SELECT s.student_id,
+    ->        CONCAT(s.first_name, ' ', s.last_name) AS student_name
+    -> FROM payments p
+    -> JOIN students s ON s.student_id = p.student_id
+    -> GROUP BY s.student_id, student_name
+    -> HAVING COUNT(p.student_id) > 1;
+Empty set (0.00 sec)
+
+11. Write an SQL query to calculate the total payments made by each student. Join the "Students" table with the "Payments" table and use GROUP BY to calculate the sum of payments for each student. 
+
+mysql> SELECT s.student_id,
+    ->        CONCAT(s.first_name, ' ', s.last_name) AS student_name,
+    ->        COALESCE(SUM(p.amount), 0) AS total_payment
+    -> FROM students s
+    -> LEFT JOIN payments p ON s.student_id = p.student_id
+    -> GROUP BY s.student_id, student_name;
++------------+---------------+---------------+
+| student_id | student_name  | total_payment |
++------------+---------------+---------------+
+|          1 | john doe      |        500.00 |
+|          2 | jane smith    |        450.00 |
+|          3 | alex brown    |        750.00 |
+|          4 | maria clark   |        550.00 |
+|          5 | david lee     |        400.00 |
+|          7 | paul miller   |        470.00 |
+|          8 | laura wilson  |          0.00 |
+|          9 | robert martin |          0.00 |
+|         10 | emily thomas  |          0.00 |
++------------+---------------+---------------+
+9 rows in set (0.00 sec)
+
+12. Retrieve a list of course names along with the count of students enrolled in each course. Use JOIN operations between the "Courses" table and the "Enrollments" table and GROUP BY to count enrollments. 
+
+mysql> SELECT c.course_id,
+    ->        c.course_name,
+    ->        COALESCE(COUNT(e.student_id), 0) AS student_count 
+    -> FROM courses c
+    -> LEFT JOIN enrollments e ON c.course_id = e.course_id 
+    -> GROUP BY c.course_id, c.course_name;
++-----------+----------------------+---------------+
+| course_id | course_name          | student_count |
++-----------+----------------------+---------------+
+|         1 | math 101             |             1 |
+|         2 | physics 201          |             2 |
+|         3 | chemistry 301        |             1 |
+|         4 | history 101          |             1 |
+|         5 | computer science 101 |             1 |
+|         6 | biology 201          |             0 |
+|         7 | english literature   |             1 |
+|         8 | economics 202        |             1 |
+|         9 | psychology 101       |             0 |
+|        10 | philosophy 301       |             0 |
++-----------+----------------------+---------------+
+10 rows in set (0.00 sec)
+
+13. Calculate the average payment amount made by students. Use JOIN operations between the 
+"Students" table and the "Payments" table and GROUP BY to calculate the average.
+
+mysql> SELECT
+    ->     s.student_id,
+    ->     CONCAT(s.first_name, ' ', s.last_name) AS student_name,
+    ->     ROUND(COALESCE(AVG(p.amount), 0), 2) AS avg_payment
+    -> FROM students s
+    -> LEFT JOIN payments p ON s.student_id = p.student_id
+    -> GROUP BY s.student_id, student_name;
++------------+---------------+-------------+
+| student_id | student_name  | avg_payment |
++------------+---------------+-------------+
+|          1 | john doe      |      500.00 |
+|          2 | jane smith    |      450.00 |
+|          3 | alex brown    |      750.00 |
+|          4 | maria clark   |      550.00 |
+|          5 | david lee     |      400.00 |
+|          7 | paul miller   |      470.00 |
+|          8 | laura wilson  |        0.00 |
+|          9 | robert martin |        0.00 |
+|         10 | emily thomas  |        0.00 |
++------------+---------------+-------------+
+9 rows in set (0.01 sec)
